@@ -1,0 +1,43 @@
+databases:
+  - name: scholarai-postgres
+    plan: free
+    databaseName: scholarai
+    user: scholarai
+
+services:
+  - type: web
+    name: scholarai-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerCommand: uvicorn scholarai.interfaces.api.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: SCHOLARAI_ENVIRONMENT
+        value: production
+      - key: SCHOLARAI_DATABASE__URL
+        fromDatabase:
+          name: scholarai-postgres
+          property: connectionString
+      - key: SCHOLARAI_API__API_KEYS
+        sync: false
+      - key: SCHOLARAI_LLM__PROVIDER
+        value: openai
+      - key: SCHOLARAI_LLM__OPENAI_API_KEY
+        sync: false
+      - key: SCHOLARAI_WEBSEARCH__ENABLED
+        value: true
+      - key: SCHOLARAI_WEBSEARCH__PROVIDER
+        value: duckduckgo
+
+  - type: web
+    name: scholarai-ui
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerCommand: streamlit run ui/streamlit_app/app.py --server.address=0.0.0.0 --server.port=$PORT
+    envVars:
+      - key: SCHOLARAI_API_BASE_URL
+        value: https://scholarai-api.onrender.com
+      - key: SCHOLARAI_API_KEY
+        sync: false

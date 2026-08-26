@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title{font:700 34px 'Times New Roman',serif;fill:#172033}.section{font:700 19px 'Times New Roman',serif;fill:#172033}
+      .head{font:700 17px 'Times New Roman',serif;fill:#172033}.body{font:15px 'Times New Roman',serif;fill:#334155}
+      .small{font:14px 'Times New Roman',serif;fill:#334155}.box{stroke:#334155;stroke-width:1.6;rx:12;ry:12}
+      .edge{fill:none;stroke:#334155;stroke-width:1.7;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="#ffffff"/>
+  <text x="800" y="50" text-anchor="middle" class="title">ScholarAI Workforce: Supervisor-Orchestrated Agentic AI Platform</text>
+  <text x="800" y="78" text-anchor="middle" class="body">Live scholarship evaluation with evidence, memory, tools, and human control</text>
+
+  <!-- Connectors are intentionally behind nodes. -->
+  <path class="edge" d="M320 154 H475"/><path class="edge" d="M1125 154 H1280"/>
+  <path class="edge" d="M800 202 V250"/><path class="edge" d="M800 336 V375"/>
+  <path class="edge" d="M800 700 V750"/><path class="edge" d="M475 790 H320"/><path class="edge" d="M1125 790 H1280"/>
+  <path class="edge" d="M505 690 V750 H455"/><path class="edge" d="M675 690 V750 H610"/>
+  <path class="edge" d="M845 690 V750 H990"/><path class="edge" d="M1015 690 V750 H1145"/>
+  <path d="M1080 635 H1180 V305 H1035" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="106" width="250" height="96" class="box" fill="#dbeafe"/>
+  <text x="195" y="143" text-anchor="middle" class="head">Streamlit Operations UI</text>
+  <text x="195" y="170" text-anchor="middle" class="small">Dashboard · live trace · reports</text>
+  <text x="195" y="190" text-anchor="middle" class="small">Pause · resume · cancel · retry</text>
+
+  <rect x="475" y="106" width="650" height="96" class="box" fill="#eef2ff"/>
+  <text x="800" y="140" text-anchor="middle" class="head">FastAPI Application Layer + Background Run Manager</text>
+  <text x="800" y="168" text-anchor="middle" class="small">HTTP 202 start · one-second polling · cooperative checkpoints · JSON logs</text>
+  <text x="800" y="190" text-anchor="middle" class="small">Actual provider token accounting and cost estimation</text>
+
+  <rect x="1280" y="106" width="250" height="96" class="box" fill="#dbeafe"/>
+  <text x="1405" y="143" text-anchor="middle" class="head">Human Review Gate</text>
+  <text x="1405" y="170" text-anchor="middle" class="small">Approve · reject · request info</text>
+  <text x="1405" y="190" text-anchor="middle" class="small">Request review → full rerun</text>
+
+  <rect x="570" y="250" width="460" height="86" class="box" fill="#bfdbfe"/>
+  <text x="800" y="283" text-anchor="middle" class="head">Supervisor Agent</text>
+  <text x="800" y="310" text-anchor="middle" class="small">Plans, routes, monitors failures, and targets critic revisions</text>
+
+  <rect x="105" y="375" width="1390" height="325" rx="18" ry="18" fill="#ffffff" stroke="#64748b" stroke-width="1.8" stroke-dasharray="9 7"/>
+  <rect x="132" y="359" width="355" height="32" fill="#ffffff"/>
+  <text x="145" y="382" class="section">Executable LangGraph Shared-State Workflow</text>
+
+  <g>
+    <rect x="145" y="420" width="238" height="86" class="box" fill="#f1f5f9"/><text x="264" y="452" text-anchor="middle" class="head">1 · Document Analysis</text><text x="264" y="478" text-anchor="middle" class="small">Parse and extract evidence</text>
+    <rect x="413" y="420" width="238" height="86" class="box" fill="#f1f5f9"/><text x="532" y="452" text-anchor="middle" class="head">2 · Eligibility</text><text x="532" y="478" text-anchor="middle" class="small">Deterministic rules</text>
+    <rect x="681" y="420" width="238" height="86" class="box" fill="#f1f5f9"/><text x="800" y="452" text-anchor="middle" class="head">3 · Academic</text><text x="800" y="478" text-anchor="middle" class="small">CGPA and trend scoring</text>
+    <rect x="949" y="420" width="238" height="86" class="box" fill="#f1f5f9"/><text x="1068" y="452" text-anchor="middle" class="head">4 · Financial Need</text><text x="1068" y="478" text-anchor="middle" class="small">Evidence-aware scoring</text>
+    <rect x="1217" y="420" width="238" height="86" class="box" fill="#f1f5f9"/><text x="1336" y="452" text-anchor="middle" class="head">5 · Achievement</text><text x="1336" y="478" text-anchor="middle" class="small">Structured merit scoring</text>
+
+    <rect x="145" y="550" width="238" height="100" class="box" fill="#e0f2fe"/><text x="264" y="583" text-anchor="middle" class="head">6 · Policy / RAG</text><text x="264" y="609" text-anchor="middle" class="small">Internal citations + safe</text><text x="264" y="630" text-anchor="middle" class="small">public web context</text>
+    <rect x="413" y="550" width="238" height="100" class="box" fill="#f1f5f9"/><text x="532" y="583" text-anchor="middle" class="head">7 · Verification</text><text x="532" y="609" text-anchor="middle" class="small">Cross-document conflicts</text>
+    <rect x="681" y="550" width="238" height="100" class="box" fill="#ede9fe"/><text x="800" y="583" text-anchor="middle" class="head">8 · Evaluation</text><text x="800" y="609" text-anchor="middle" class="small">Weighted recommendation</text>
+    <rect x="949" y="550" width="238" height="100" class="box" fill="#ede9fe"/><text x="1068" y="583" text-anchor="middle" class="head">9 · SOP Writer</text><text x="1068" y="609" text-anchor="middle" class="small">Evidence-grounded draft</text>
+    <rect x="1217" y="550" width="238" height="100" class="box" fill="#fee2e2"/><text x="1336" y="583" text-anchor="middle" class="head">10 · Critic</text><text x="1336" y="609" text-anchor="middle" class="small">Audit and bounded revise</text><text x="1336" y="630" text-anchor="middle" class="small">loop to Supervisor</text>
+  </g>
+
+  <rect x="70" y="750" width="250" height="82" class="box" fill="#ecfeff"/>
+  <text x="195" y="782" text-anchor="middle" class="head">Tools</text><text x="195" y="808" text-anchor="middle" class="small">Documents · calculation · web</text>
+  <rect x="390" y="750" width="330" height="82" class="box" fill="#ecfeff"/>
+  <text x="555" y="782" text-anchor="middle" class="head">Knowledge &amp; Shared Memory</text><text x="555" y="808" text-anchor="middle" class="small">Qdrant RAG · typed state · agent messages</text>
+  <rect x="880" y="750" width="265" height="82" class="box" fill="#ecfeff"/>
+  <text x="1012" y="782" text-anchor="middle" class="head">LLM Abstraction</text><text x="1012" y="808" text-anchor="middle" class="small">OpenAI · Anthropic · Ollama · offline</text>
+  <rect x="1280" y="750" width="250" height="82" class="box" fill="#ecfeff"/>
+  <text x="1405" y="782" text-anchor="middle" class="head">Persistent Audit Memory</text><text x="1405" y="808" text-anchor="middle" class="small">PostgreSQL episodes + decisions</text>
+
+  <text x="800" y="875" text-anchor="middle" class="small">All scoring remains deterministic; LLMs narrate evidence and draft the SOP. Final decisions remain human-owned.</text>
+</svg>

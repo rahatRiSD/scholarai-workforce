@@ -1,0 +1,77 @@
+# ScholarAI Workforce - full local stack: PostgreSQL, Qdrant, the FastAPI
+# backend, and the Streamlit UI. `docker compose up --build` gets a fully
+# working system with zero manual setup (no API key needed - the LLM layer
+# falls back to offline mode; see .env.example).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: scholarai
+      POSTGRES_PASSWORD: scholarai
+      POSTGRES_DB: scholarai
+    ports:
+      - "5432:5432"
+    volumes:
+      - scholarai_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scholarai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    ports:
+      - "6333:6333"
+    volumes:
+      - scholarai_qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/readyz || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      SCHOLARAI_ENVIRONMENT: development
+      SCHOLARAI_DATABASE__URL: postgresql+asyncpg://scholarai:scholarai@postgres:5432/scholarai
+      SCHOLARAI_VECTORSTORE__URL: http://qdrant:6333
+      SCHOLARAI_LLM__PROVIDER: ${SCHOLARAI_LLM__PROVIDER:-openai}
+      SCHOLARAI_LLM__OPENAI_API_KEY: ${SCHOLARAI_LLM__OPENAI_API_KEY:-}
+      SCHOLARAI_LLM__ANTHROPIC_API_KEY: ${SCHOLARAI_LLM__ANTHROPIC_API_KEY:-}
+      SCHOLARAI_API__API_KEYS: ${SCHOLARAI_API__API_KEYS:-}
+      SCHOLARAI_WEBSEARCH__ENABLED: ${SCHOLARAI_WEBSEARCH__ENABLED:-true}
+      SCHOLARAI_WEBSEARCH__PROVIDER: ${SCHOLARAI_WEBSEARCH__PROVIDER:-duckduckgo}
+      SCHOLARAI_WEBSEARCH__TAVILY_API_KEY: ${SCHOLARAI_WEBSEARCH__TAVILY_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["streamlit", "run", "ui/streamlit_app/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    ports:
+      - "8501:8501"
+    environment:
+      SCHOLARAI_API_BASE_URL: http://backend:8000
+      SCHOLARAI_API_KEY: ${SCHOLARAI_API__API_KEYS:-}
+    volumes:
+      - ./ui:/app/ui
+    depends_on:
+      - backend
+
+volumes:
+  scholarai_postgres_data:
+  scholarai_qdrant_data:

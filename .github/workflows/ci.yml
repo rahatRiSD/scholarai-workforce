@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Ruff (lint)
+        run: uv run ruff check src ui tests
+
+      - name: Ruff (format check)
+        run: uv run ruff format --check src ui tests
+
+      - name: Mypy
+        run: uv run mypy src
+
+      - name: Pytest (unit + integration + e2e)
+        run: uv run pytest -v --cov=scholarai --cov-report=term-missing
+        env:
+          SCHOLARAI_ENVIRONMENT: test
+          SCHOLARAI_LLM__PROVIDER: offline

@@ -1,0 +1,18 @@
+UNIVERSITY OF NORTHFIELD - OFFICIAL ACADEMIC TRANSCRIPT (SYNTHETIC SAMPLE)
+
+Student Name: Farrukh Aliyev
+Student ID: STU-10003
+Program: BSc Mechanical Engineering
+Department: Mechanical Engineering
+Current Semester: 5
+CGPA: 3.58
+Credits Completed: 75
+Expected Graduation Year: 2027
+
+Semester 1 GPA: 3.40
+Semester 2 GPA: 3.55
+Semester 3 GPA: 3.60
+Semester 4 GPA: 3.68
+
+Achievements:
+- [certification] Certified SolidWorks Associate (2024)

@@ -1,0 +1,22 @@
+UNIVERSITY OF NORTHFIELD - OFFICIAL ACADEMIC TRANSCRIPT (SYNTHETIC SAMPLE)
+
+Student Name: Amina Rahman
+Student ID: STU-10001
+Program: BSc Computer Science
+Department: Computer Science
+Current Semester: 6
+CGPA: 3.91
+Credits Completed: 96
+Expected Graduation Year: 2027
+
+Semester 1 GPA: 3.65
+Semester 2 GPA: 3.72
+Semester 3 GPA: 3.80
+Semester 4 GPA: 3.88
+Semester 5 GPA: 3.95
+
+Achievements:
+- [award] Dean's List, six consecutive semesters (2024)
+- [competition] National Collegiate Programming Contest - 1st Place (2024)
+- [publication] Undergraduate research note, IEEE regional student conference (2023)
+- [leadership] President, Computer Science Student Society (2024)
