@@ -1,5 +1,7 @@
 # ScholarAI Workforce
 
+Repository: [github.com/rahatRiSD/scholarai-workforce](https://github.com/rahatRiSD/scholarai-workforce)
+
 A Supervisor-orchestrated, multi-agent AI system for **explainable, human-in-the-loop
 university scholarship evaluation** — built with LangGraph, FastAPI, and Streamlit.
 
