@@ -19,6 +19,8 @@ _PRICING_PER_MILLION: dict[str, tuple[float, float]] = {
     "gpt-4.1-mini": (0.40, 1.60),
     "claude-3-5-haiku": (0.80, 4.00),
     "claude-3-5-sonnet": (3.00, 15.00),
+    "openai/gpt-oss-20b": (0.075, 0.30),
+    "openai/gpt-oss-120b": (0.15, 0.60),
 }
 
 

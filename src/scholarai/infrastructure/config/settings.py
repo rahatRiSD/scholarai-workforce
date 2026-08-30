@@ -28,6 +28,7 @@ class Environment(StrEnum):
 
 class LLMProvider(StrEnum):
     OPENAI = "openai"
+    GROQ = "groq"
     ANTHROPIC = "anthropic"
     OLLAMA = "ollama"
     OFFLINE = "offline"
@@ -40,6 +41,10 @@ class LLMSettings(BaseSettings):
     provider: LLMProvider = LLMProvider.OPENAI
     openai_api_key: SecretStr | None = None
     openai_model: str = "gpt-4o-mini"
+    groq_api_key: SecretStr | None = None
+    groq_model: str = "openai/gpt-oss-20b"
+    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_min_request_interval_seconds: float = 2.1
     anthropic_api_key: SecretStr | None = None
     anthropic_model: str = "claude-3-5-haiku-latest"
     ollama_base_url: str = "http://localhost:11434"
@@ -56,6 +61,8 @@ class LLMSettings(BaseSettings):
         setup while still defaulting to OpenAI the moment a key is present.
         """
         if self.provider is LLMProvider.OPENAI and not self.openai_api_key:
+            return LLMProvider.OFFLINE
+        if self.provider is LLMProvider.GROQ and not self.groq_api_key:
             return LLMProvider.OFFLINE
         if self.provider is LLMProvider.ANTHROPIC and not self.anthropic_api_key:
             return LLMProvider.OFFLINE

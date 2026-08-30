@@ -14,6 +14,7 @@ from typing import Any
 
 from scholarai.application.agents.support import add_message, add_trace, timed
 from scholarai.application.orchestration.trace import TraceStatus
+from scholarai.domain.errors import AgentExecutionError
 from scholarai.domain.models.evaluation import (
     ComponentScores,
     CriticResult,
@@ -27,6 +28,12 @@ from scholarai.infrastructure.observability import get_logger
 AGENT_NAME = "critic_agent"
 log = get_logger(__name__)
 _SCORE_TOLERANCE = 0.5
+
+_SYSTEM = (
+    "You are the Critic Agent in a scholarship-review workforce. Explain the completed "
+    "deterministic audit in two or three concise sentences. Preserve the supplied verdict, "
+    "scores, checks, and issues exactly; do not override the audit or invent evidence."
+)
 
 
 async def run(state: dict[str, Any], deps: Any) -> dict[str, Any]:
@@ -96,6 +103,10 @@ async def run(state: dict[str, Any], deps: Any) -> dict[str, Any]:
     result = CriticResult(
         verdict=verdict, issues=tuple(issues), checked=tuple(checked), confidence=0.9 if not issues else 0.6
     )
+    issue_summary = "; ".join(issues) or "no issues found"
+    audit_summary = f"{verdict.value.upper()}: {issue_summary}"
+    if deps.llm.provider_name != "offline":
+        audit_summary = await _narrate(deps, result, reported, recomputed)
 
     add_trace(
         trace,
@@ -105,14 +116,13 @@ async def run(state: dict[str, Any], deps: Any) -> dict[str, Any]:
         detail=verdict.value.upper(),
         duration_ms=t["ms"],
     )
-    issue_summary = "; ".join(issues) or "no issues found"
-    add_message(messages, AGENT_NAME, "supervisor", f"{verdict.value.upper()}: {issue_summary}")
+    add_message(messages, AGENT_NAME, "supervisor", audit_summary)
 
     agent_results_out = dict(agent_results)
     agent_results_out[AGENT_NAME] = {
         "agent_name": AGENT_NAME,
         "status": "success",
-        "findings": (f"verdict={verdict.value}",),
+        "findings": (audit_summary,),
         "issues": tuple(issues),
     }
 
@@ -122,3 +132,19 @@ async def run(state: dict[str, Any], deps: Any) -> dict[str, Any]:
         "trace": trace,
         "messages": messages,
     }
+
+
+async def _narrate(deps: Any, result: CriticResult, reported: float, recomputed: float) -> str:
+    context = {
+        "verdict": result.verdict.value,
+        "reported_score": reported,
+        "recomputed_score": recomputed,
+        "issues": list(result.issues),
+        "checks": list(result.checked),
+    }
+    try:
+        return await deps.llm.complete(_SYSTEM, f"CONTEXT:\n{context}")
+    except AgentExecutionError as exc:
+        log.warning("agent.critic.narration_failed", error=str(exc))
+        issue_summary = "; ".join(result.issues) or "no issues found"
+        return f"{result.verdict.value.upper()}: {issue_summary}"

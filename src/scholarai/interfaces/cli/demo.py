@@ -103,7 +103,8 @@ async def run_demo() -> None:
             application.application_id,
             decision,
         )
-        final_status = final["final_recommendation"]["final_status"]
+        final_recommendation = final.get("final_recommendation") or {}
+        final_status = final_recommendation.get("final_status", final["status"])
         print(f"  Human reviewer   -> {action.value} -> final status: {final_status}")
         results.append((application.application_id, folder_name, recommendation, final_status))
 

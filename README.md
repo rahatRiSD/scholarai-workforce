@@ -177,7 +177,7 @@ uses a plain terminal node rather than LangGraph's `interrupt()`/checkpointer ma
 ## 7. Tech stack
 
 Python 3.12 · LangGraph · Pydantic v2 / Pydantic Settings · SQLAlchemy 2.0 (async) ·
-PostgreSQL / SQLite · Qdrant · FastAPI · Streamlit · OpenAI / Anthropic / Ollama (pluggable) ·
+PostgreSQL / SQLite · Qdrant · FastAPI · Streamlit · OpenAI / Groq / Anthropic / Ollama (pluggable) ·
 structlog · PyMuPDF · python-docx · pytest.
 
 ## 8. Installation
@@ -204,7 +204,8 @@ docker compose up --build
 ```
 
 Starts PostgreSQL, Qdrant, the FastAPI backend (`localhost:8000`), and the Streamlit UI
-(`localhost:8501`). Set `SCHOLARAI_LLM__OPENAI_API_KEY` (or `..._ANTHROPIC_API_KEY`) in
+(`localhost:8501`). Set `SCHOLARAI_LLM__OPENAI_API_KEY`, `..._GROQ_API_KEY`, or
+`..._ANTHROPIC_API_KEY` in
 your shell before `up` to use a real LLM provider instead of offline mode.
 
 ## 11. Local setup (no Docker)

@@ -14,6 +14,7 @@ from typing import Any
 from scholarai.application.agents.deps import AgentDeps
 from scholarai.application.agents.support import add_message, add_trace, timed
 from scholarai.application.orchestration.trace import TraceStatus
+from scholarai.domain.errors import AgentExecutionError
 from scholarai.domain.models.documents import Document
 from scholarai.domain.models.explainability import Evidence, EvidenceQuality
 from scholarai.domain.models.results import AgentStatus, VerificationResult
@@ -23,6 +24,13 @@ from scholarai.infrastructure.observability import get_logger
 
 AGENT_NAME = "verification_agent"
 log = get_logger(__name__)
+
+_SYSTEM = (
+    "You are the Verification Agent in a scholarship-review workforce. Summarize the "
+    "deterministic cross-document verification result in one or two precise sentences. "
+    "Do not invent a conflict, resolve a conflict, or change any reported value. Explicitly "
+    "state whether a conflict was detected and identify the compared sources when provided."
+)
 
 
 async def run(state: dict[str, Any], deps: AgentDeps) -> dict[str, Any]:
@@ -64,11 +72,14 @@ async def run(state: dict[str, Any], deps: AgentDeps) -> dict[str, Any]:
 
     conflict_detected = bool(conflicts)
     status = AgentStatus.WARNING if conflict_detected else AgentStatus.SUCCESS
+    summary = f"{len(cgpa_by_source)} source(s) compared; {len(conflicts)} conflict(s) found."
+    if deps.llm.provider_name != "offline":
+        summary = await _narrate(deps, cgpa_by_source, conflicts, unsupported, missing_evidence)
 
     result = VerificationResult(
         agent_name=AGENT_NAME,
         status=status,
-        findings=(f"{len(cgpa_by_source)} source(s) compared; {len(conflicts)} conflict(s) found",),
+        findings=(summary,),
         evidence=tuple(evidence),
         confidence=0.9,
         issues=tuple(conflicts),
@@ -90,7 +101,7 @@ async def run(state: dict[str, Any], deps: AgentDeps) -> dict[str, Any]:
         messages,
         AGENT_NAME,
         "supervisor",
-        "CONFLICT DETECTED" if conflict_detected else "no conflicts found across submitted documents",
+        summary,
     )
 
     agent_results = dict(state.get("agent_results", {}))
@@ -107,3 +118,24 @@ async def run(state: dict[str, Any], deps: AgentDeps) -> dict[str, Any]:
 def _find_unsupported_achievement_claims(state: dict[str, Any]) -> list[str]:
     achievements = state.get("extracted_data", {}).get("achievements", [])
     return [a["title"] for a in achievements if not a.get("evidence_document")]
+
+
+async def _narrate(
+    deps: AgentDeps,
+    cgpa_by_source: dict[str, float],
+    conflicts: list[str],
+    unsupported: list[str],
+    missing_evidence: list[str],
+) -> str:
+    context = {
+        "cgpa_by_source": cgpa_by_source,
+        "conflict_detected": bool(conflicts),
+        "conflicts": conflicts,
+        "unsupported_claims": unsupported,
+        "missing_evidence": missing_evidence,
+    }
+    try:
+        return await deps.llm.complete(_SYSTEM, f"CONTEXT:\n{context}")
+    except AgentExecutionError as exc:
+        log.warning("agent.verification.narration_failed", error=str(exc))
+        return f"{len(cgpa_by_source)} source(s) compared; {len(conflicts)} conflict(s) found."

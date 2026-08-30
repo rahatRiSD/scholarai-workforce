@@ -29,6 +29,10 @@ def build_llm_client(settings: LLMSettings) -> LLMClient:
         from scholarai.infrastructure.llm.openai_client import OpenAILLMClient
 
         return OpenAILLMClient(settings)
+    if provider is LLMProvider.GROQ:
+        from scholarai.infrastructure.llm.groq_client import GroqLLMClient
+
+        return GroqLLMClient(settings)
     if provider is LLMProvider.ANTHROPIC:
         from scholarai.infrastructure.llm.anthropic_client import AnthropicLLMClient
 
