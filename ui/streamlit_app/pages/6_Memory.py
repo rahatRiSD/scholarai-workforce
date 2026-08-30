@@ -13,14 +13,16 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
-from ui.streamlit_app.components.styling import application_status_badge, inject_base_styles  # noqa: E402
+from ui.streamlit_app.components.styling import application_status_badge, inject_base_styles, page_header  # noqa: E402
 from ui.streamlit_app.services.session import get_client  # noqa: E402
 
 inject_base_styles()
-st.title("🧠 Memory")
-st.caption(
-    "Long-term memory has two layers: a structured episode history per student (SQL), and a "
-    "semantic index of past evaluations for finding similar prior cases (vector store)."
+page_header(
+    "🧠",
+    "Persistent institutional intelligence",
+    "Memory Explorer",
+    "Review structured student history and retrieve semantically similar decisions from long-term memory.",
+    ("PostgreSQL episodes", "Vector similarity", "Case precedent"),
 )
 
 client = get_client()

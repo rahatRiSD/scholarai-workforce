@@ -15,12 +15,22 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
-from ui.streamlit_app.components.styling import application_status_badge, inject_base_styles  # noqa: E402
+from ui.streamlit_app.components.styling import (  # noqa: E402
+    application_status_badge,
+    empty_state,
+    inject_base_styles,
+    page_header,
+)
 from ui.streamlit_app.services.session import get_client, set_selected_application_id  # noqa: E402
 
 inject_base_styles()
-st.title("📊 Dashboard")
-st.caption("Fleet-level view of every scholarship application moving through the Supervisor workflow.")
+page_header(
+    "📊",
+    "Operations command center",
+    "Scholarship Intelligence Dashboard",
+    "Follow every application from secure document intake to explainable human review.",
+    ("10 AI agents", "Live orchestration", "Human-in-the-loop"),
+)
 
 client = get_client()
 
@@ -48,7 +58,7 @@ except ScholarAIAPIError as exc:
     st.stop()
 
 if not applications:
-    st.info("No applications yet. Go to **New Evaluation** to submit the first one.")
+    empty_state("🚀", "No applications yet. Open New Evaluation to launch your first supervised workflow.")
 else:
     rows = []
     for app_state in applications:

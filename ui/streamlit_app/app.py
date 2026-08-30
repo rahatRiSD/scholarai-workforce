@@ -21,7 +21,11 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from ui.streamlit_app.components.styling import inject_base_styles  # noqa: E402
+from ui.streamlit_app.components.styling import (  # noqa: E402
+    inject_base_styles,
+    render_footer,
+    render_sidebar_brand,
+)
 from ui.streamlit_app.services.session import get_client, initialize_connection_state  # noqa: E402
 
 st.set_page_config(
@@ -35,15 +39,14 @@ st.set_page_config(
 def render_sidebar_connection_settings() -> None:
     initialize_connection_state()
     with st.sidebar:
-        st.markdown("### 🎓 ScholarAI Workforce")
-        st.caption("Supervisor-orchestrated multi-agent scholarship evaluation")
-        with st.expander("Backend connection", expanded=False):
+        render_sidebar_brand()
+        with st.expander("⚡ System connection", expanded=False):
             st.text_input("API base URL", key="api_base_url")
             st.text_input("API key (optional)", key="api_key", type="password")
             client = get_client()
             try:
                 health = client.health()
-                st.success(f"Connected · provider={health['llm_provider']} · env={health['environment']}")
+                st.success(f"Online · {health['llm_provider']} · {health['environment']}")
             except Exception as exc:  # noqa: BLE001 - surfaced to the operator, not swallowed
                 st.error(f"Backend unreachable: {exc}")
 
@@ -69,6 +72,7 @@ def main() -> None:
     }
     navigation = st.navigation(pages)
     navigation.run()
+    render_footer()
 
 
 if __name__ == "__main__":

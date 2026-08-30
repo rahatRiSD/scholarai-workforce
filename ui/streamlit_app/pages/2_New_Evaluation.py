@@ -14,12 +14,17 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
-from ui.streamlit_app.components.styling import inject_base_styles  # noqa: E402
+from ui.streamlit_app.components.styling import inject_base_styles, page_header  # noqa: E402
 from ui.streamlit_app.services.session import get_client, set_selected_application_id  # noqa: E402
 
 inject_base_styles()
-st.title("📝 New Evaluation")
-st.caption("Submit a student's documents, then run them through the Supervisor's 10-agent workforce.")
+page_header(
+    "📝",
+    "Intelligent application intake",
+    "Launch a New Evaluation",
+    "Upload a student's evidence and let the Supervisor coordinate ten specialists through one auditable workflow.",
+    ("Secure upload", "Background execution", "Evidence grounded"),
+)
 
 client = get_client()
 
@@ -66,7 +71,7 @@ if st.button("Submit application", type="primary"):
                 st.error(f"Evaluation could not start: {exc}")
             else:
                 st.success(f"Workflow started in the background: `{started.get('run_status', 'queued')}`.")
-                st.page_link("pages/3_Agent_Workforce.py", label="→ Watch the live agent execution trace")
+                st.page_link("pages/3_Agent_Workforce.py", label="👁️ Watch the live agent execution trace")
 
 st.divider()
 st.subheader("Run an existing application")
@@ -83,7 +88,7 @@ if col1.button("Run evaluation"):
         else:
             set_selected_application_id(existing_id)
             st.success(f"Background run: `{result.get('run_status', 'queued')}`")
-            st.page_link("pages/3_Agent_Workforce.py", label="→ Watch live execution")
+            st.page_link("pages/3_Agent_Workforce.py", label="👁️ Watch live execution")
 if col2.button("Open in Agent Workforce") and existing_id:
     set_selected_application_id(existing_id)
     st.switch_page("pages/3_Agent_Workforce.py")

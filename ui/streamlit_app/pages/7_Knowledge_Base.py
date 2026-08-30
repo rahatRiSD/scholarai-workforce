@@ -13,14 +13,16 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
-from ui.streamlit_app.components.styling import inject_base_styles  # noqa: E402
+from ui.streamlit_app.components.styling import inject_base_styles, page_header  # noqa: E402
 from ui.streamlit_app.services.session import get_client  # noqa: E402
 
 inject_base_styles()
-st.title("📚 Knowledge Base")
-st.caption(
-    "The Policy Agent answers eligibility/appeal/documentation questions only from what's indexed "
-    "here (Markdown-aware chunking → embeddings → Qdrant). Nothing not in this index gets cited."
+page_header(
+    "📚",
+    "Grounded policy intelligence",
+    "Knowledge Base",
+    "Curate the source-of-truth policies used by the RAG agent, then verify retrieval with direct semantic search.",
+    ("Qdrant retrieval", "Citable sections", "Policy-only answers"),
 )
 
 client = get_client()

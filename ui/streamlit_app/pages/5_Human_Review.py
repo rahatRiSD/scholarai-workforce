@@ -17,6 +17,7 @@ from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
 from ui.streamlit_app.components.styling import (  # noqa: E402
     application_status_badge,
     inject_base_styles,
+    page_header,
     recommendation_badge,
 )
 from ui.streamlit_app.services.session import (  # noqa: E402
@@ -26,8 +27,13 @@ from ui.streamlit_app.services.session import (  # noqa: E402
 )
 
 inject_base_styles()
-st.title("✅ Human Review")
-st.caption("Every recommendation pauses here — the AI never finalizes a decision on its own (build spec §14).")
+page_header(
+    "✅",
+    "Responsible AI control point",
+    "Human Review",
+    "Every recommendation pauses here. A qualified reviewer retains final authority over each scholarship decision.",
+    ("No auto-approval", "Reviewer accountable", "Decision audit trail"),
+)
 
 client = get_client()
 application_id = st.text_input("Application ID", value=get_selected_application_id() or "", placeholder="APP-XXXXXXXX")
@@ -90,7 +96,7 @@ if st.button("Submit decision", type="primary"):
     else:
         if action == "request_review":
             st.success("Review request recorded. The Supervisor has started a fresh background run.")
-            st.page_link("pages/3_Agent_Workforce.py", label="→ Watch the rerun live")
+            st.page_link("pages/3_Agent_Workforce.py", label="👁️ Watch the rerun live")
         elif action == "request_more_information":
             st.success("Information request recorded. The application remains at the human review gate.")
         else:

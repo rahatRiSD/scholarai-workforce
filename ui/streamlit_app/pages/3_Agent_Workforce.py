@@ -18,9 +18,10 @@ if str(_PROJECT_ROOT) not in sys.path:
 from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
 from ui.streamlit_app.components.graph_view import render_workflow_graph  # noqa: E402
 from ui.streamlit_app.components.styling import (  # noqa: E402
-    agent_display_name,
+    agent_display_label,
     application_status_badge,
     inject_base_styles,
+    page_header,
     status_badge,
 )
 from ui.streamlit_app.components.workflow_controls import control_availability  # noqa: E402
@@ -31,8 +32,13 @@ from ui.streamlit_app.services.session import (  # noqa: E402
 )
 
 inject_base_styles()
-st.title("🤖 Agent Workforce")
-st.caption("Live status, execution trace, and communication history for the Supervisor's specialist agents.")
+page_header(
+    "🤖",
+    "Live multi-agent orchestration",
+    "Agent Workforce",
+    "Observe specialist reasoning, communication, tool activity, token usage, and Supervisor control in real time.",
+    ("LangGraph topology", "Live trace", "Pause · Resume · Retry"),
+)
 
 client = get_client()
 
@@ -74,14 +80,14 @@ def live_workforce() -> None:
     if run_status in {"queued", "running", "paused", "cancelling"}:
         st.markdown(
             f"<span class='scholarai-live-dot'></span><b>LIVE</b> · "
-            f"{run_status.upper()} · {agent_display_name(runtime.get('current_actor', 'supervisor'))}",
+            f"{run_status.upper()} · {agent_display_label(runtime.get('current_actor', 'supervisor'))}",
             unsafe_allow_html=True,
         )
     st.progress(float(runtime.get("progress", 0.0)), text=f"Workflow progress: {runtime.get('current_step', 0)} steps")
     st.markdown(
         f"**Status:** {application_status_badge(status)} &nbsp;·&nbsp; "
         f"**Critic revisions:** {app_state.get('critic_revisions', 0)} &nbsp;·&nbsp; "
-        f"**Plan:** {', '.join(agent_display_name(a) for a in plan) or '—'}",
+        f"**Plan:** {', '.join(agent_display_label(a) for a in plan) or '—'}",
         unsafe_allow_html=True,
     )
 
@@ -100,7 +106,7 @@ def live_workforce() -> None:
     failed_agents = [key for key, value in agent_results.items() if value.get("status") == "failed"]
     retry_choices = failed_agents or list(agent_results.keys())
     retry_agent = (
-        retry_col.selectbox("Retry agent", retry_choices, format_func=agent_display_name, label_visibility="collapsed")
+        retry_col.selectbox("Retry agent", retry_choices, format_func=agent_display_label, label_visibility="collapsed")
         if retry_choices
         else None
     )
@@ -125,7 +131,7 @@ def live_workforce() -> None:
             st.info("No agents have run yet. Trigger an evaluation from **New Evaluation**.")
         for agent_key, result in agent_results.items():
             st.markdown(
-                f"**{agent_display_name(agent_key)}** {status_badge(result.get('status', 'success'))}",
+                f"**{agent_display_label(agent_key)}** {status_badge(result.get('status', 'success'))}",
                 unsafe_allow_html=True,
             )
             st.markdown(f"<div class='scholarai-card'>{result.get('findings', '')}</div>", unsafe_allow_html=True)

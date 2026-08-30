@@ -15,7 +15,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from ui.streamlit_app.client import ScholarAIAPIError  # noqa: E402
-from ui.streamlit_app.components.styling import inject_base_styles, recommendation_badge  # noqa: E402
+from ui.streamlit_app.components.styling import inject_base_styles, page_header, recommendation_badge  # noqa: E402
 from ui.streamlit_app.services.session import (  # noqa: E402
     get_client,
     get_selected_application_id,
@@ -23,8 +23,13 @@ from ui.streamlit_app.services.session import (  # noqa: E402
 )
 
 inject_base_styles()
-st.title("🔍 Evaluation Details")
-st.caption("The Evaluation Agent's deterministic scoring, the Critic's verdict, and every citable piece of evidence.")
+page_header(
+    "🔍",
+    "Explainable decision intelligence",
+    "Evaluation Details",
+    "Inspect deterministic scores, Critic checks, source evidence, policy citations, and the student's generated SOP.",
+    ("Transparent scoring", "Citable evidence", "Critic verified"),
+)
 
 client = get_client()
 application_id = st.text_input("Application ID", value=get_selected_application_id() or "", placeholder="APP-XXXXXXXX")
