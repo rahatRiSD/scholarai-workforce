@@ -17,7 +17,17 @@ from pathlib import Path
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+
+def _find_project_root(start: Path | None = None) -> Path:
+    """Locate runtime assets in both source checkouts and installed images."""
+    candidates = (start or Path.cwd(), *Path(__file__).resolve().parents)
+    for candidate in candidates:
+        if (candidate / "pyproject.toml").is_file() and (candidate / "data").is_dir():
+            return candidate
+    return start or Path.cwd()
+
+
+_PROJECT_ROOT = _find_project_root()
 
 
 class Environment(StrEnum):
