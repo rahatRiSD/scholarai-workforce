@@ -22,7 +22,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from ui.streamlit_app.components.styling import inject_base_styles  # noqa: E402
-from ui.streamlit_app.services.session import get_client  # noqa: E402
+from ui.streamlit_app.services.session import get_client, initialize_connection_state  # noqa: E402
 
 st.set_page_config(
     page_title="ScholarAI Workforce",
@@ -33,7 +33,7 @@ st.set_page_config(
 
 
 def render_sidebar_connection_settings() -> None:
-    get_client()  # ensures st.session_state["api_base_url"] / ["api_key"] defaults exist
+    initialize_connection_state()
     with st.sidebar:
         st.markdown("### 🎓 ScholarAI Workforce")
         st.caption("Supervisor-orchestrated multi-agent scholarship evaluation")
